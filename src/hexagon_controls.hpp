@@ -8,9 +8,7 @@
 
 #define LATCH_PIN 12
 #define CLOCK_PIN 13
-#define DATA_PIN_1 14
-#define DATA_PIN_2 16
-#define DATA_PIN_3 17
+#define DATA_PIN 14
 
 
 const char* hexagonUUIDs[HEXAGONS_COUNT] = {
@@ -44,7 +42,7 @@ BLEIntCharacteristic hexagonsColorCharacteristic("hexagons-color", BLERead | BLE
 
 BLEService hexagonsPowerService("hexagons-power-service");
 BLEBoolCharacteristic* hexagonsPowerCharacteristic[HEXAGONS_COUNT];
-byte hexagonPowers[3];
+uint32_t hexagonPowers;
 
 void setupHexagons();
 void setupHexagonsBLE();
@@ -62,9 +60,7 @@ void setupHexagons()
     FastLED.addLeds<NEOPIXEL, HEXAGONS_COLOR_PIN>(hexagonLeds, HEXAGON_LEDS_COUNT);
     pinMode(LATCH_PIN, OUTPUT);
     pinMode(CLOCK_PIN, OUTPUT);
-    pinMode(DATA_PIN_1, OUTPUT);
-    pinMode(DATA_PIN_2, OUTPUT);
-    pinMode(DATA_PIN_3, OUTPUT);
+    pinMode(DATA_PIN, OUTPUT);
 }
 
 void setupHexagonsBLE()
@@ -147,34 +143,16 @@ void turnOffHexagon(int hexagonIndex)
 void switchHexagon(int hexagonIndex, bool power)
 {
     digitalWrite(LATCH_PIN, LOW);
-    byte bitsToSend = hexagonPowers[hexagonIndex / 8];
     if (power)
     {
-        bitsToSend = bitsToSend || 1 << hexagonIndex;
+        hexagonPowers = hexagonPowers || 1 << hexagonIndex;
     }
     else
     {
-        bitsToSend = bitsToSend && ~(1 << hexagonIndex);
+        hexagonPowers = hexagonPowers && ~(1 << hexagonIndex);
     }
 
-    uint8_t dataPin;
-    switch (hexagonIndex / 8)
-    {
-    case 0:
-        dataPin = DATA_PIN_1;
-        break;
-    case 1:
-        dataPin = DATA_PIN_2;
-        break;
-    case 2:
-        dataPin = DATA_PIN_3;
-        break;
-    default:
-        break;
-    }
-
-    shiftOut(dataPin, CLOCK_PIN, MSBFIRST, bitsToSend);
-    hexagonPowers[hexagonIndex / 8] = bitsToSend;
+    shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, hexagonPowers);
 
     digitalWrite(LATCH_PIN, HIGH);
 }
