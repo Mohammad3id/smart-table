@@ -1,4 +1,4 @@
-#include <FastLED.h>
+#include "utils.hpp"
 
 CRGB interpolateColor(CRGB startColor, CRGB endColor, int step, int steps)
 {

@@ -1,11 +1,4 @@
-#ifndef HEXAGONS_COUNT
-#define HEXAGONS_COUNT 21
-#define HEXAGON_LEDS_COUNT 21
-#define HEXAGONS_COLOR_PIN 15
-
-#define LATCH_PIN 12
-#define CLOCK_PIN 13
-#define DATA_PIN 14
+#include "../constants/constants.hpp"
 
 const char* hexagonUUIDs[HEXAGONS_COUNT] = {
     "hexagon-0",
@@ -31,4 +24,3 @@ const char* hexagonUUIDs[HEXAGONS_COUNT] = {
     "hexagon-20",
 };
 
-#endif

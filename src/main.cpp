@@ -2,7 +2,7 @@
 #include <ArduinoBLE.h>
 #include <FastLED.h>
 
-#include "hexagon_controls/hexagon_setup.hpp"
+#include "setup/setup.hpp"
 
 void setup()
 {
@@ -12,8 +12,8 @@ void setup()
     Serial.println("- Starting Bluetooth® Low Energy module failed!");
     while (1);
   }
-  setupHexagonsBLE();
-  setupHexagons();
+  setupTableBLE();
+  setupTable();
 }
 
 void loop()

@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include "utils.hpp"
 
 String binaryString(uint32_t num, int digitsCount)
 {
