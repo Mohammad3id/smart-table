@@ -1,6 +1,7 @@
 #include <ArduinoBLE.h>
 #include <FastLED.h>
 
+#include "color.hpp"
 #include "../../constants/constants.hpp"
 
 CRGB ledsColor[HEXAGON_LEDS_COUNT];
@@ -9,8 +10,6 @@ BLEIntCharacteristic colorCharacteristic("color", BLERead | BLEWrite);
 
 
 void onColorChange(BLEDevice central, BLECharacteristic characteristic);
-
-
 
 void setupColor()
 {
@@ -39,4 +38,11 @@ void setHexagonsColor(CRGB color)
         ledsColor[i] = color;
     }
     FastLED.show();
+}
+
+CRGB getCurrentColor()
+{
+    uint32_t newColor;
+    colorCharacteristic.readValue(newColor);
+    return CRGB(newColor);
 }

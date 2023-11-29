@@ -6,5 +6,6 @@
 void setupColor();
 void setupColorBLE();
 void setHexagonsColor(CRGB color);
+CRGB getCurrentColor();
 
 #endif

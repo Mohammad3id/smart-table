@@ -3,5 +3,6 @@
 
 void setupToggle();
 void setupToggleBLE();
+void toggleHexagon(int hexagonIndex, bool power);
 
 #endif

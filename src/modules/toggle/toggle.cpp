@@ -11,8 +11,6 @@ BLEBoolCharacteristic* toggleCharacteristics[HEXAGONS_COUNT];
 
 
 void onToggleChange(BLEDevice central, BLECharacteristic characteristic);
-void toggleHexagon(int hexagonIndex, bool power);
-
 
 void setupToggle()
 {
