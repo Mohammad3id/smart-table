@@ -1,19 +1,15 @@
 #include <ReactESP.h>
 
-#include "ArduinoBLE.h"
 #include "modes.hpp"
 #include "../../async/async.hpp"
 #include "../color/color.hpp"
 #include "../../utils/utils.hpp"
+#include "../../constants/constants.hpp"
 
-TableModes currentMode = Normal;
-BLEService modesService("modes-service");
-BLEByteCharacteristic currentModeCharacteristics("current-mode", BLERead | BLEWrite);
 
 reactesp::Reaction* currentLoop;
+String currentMode = MODE_NORMAL;
 
-
-void onCurrentModeChange(BLEDevice central, BLECharacteristic characteristic);
 void enableColorfulMode();
 void enableNormalMode();
 
@@ -22,65 +18,57 @@ void setupModes()
     // In case of any future setups
 }
 
-void setupModesBLE()
+void handleModeCommand(String command)
 {
-    BLE.setAdvertisedService(modesService);
-    currentModeCharacteristics.setEventHandler(BLEWritten, onCurrentModeChange);
-    modesService.addCharacteristic(currentModeCharacteristics);
-    BLE.addService(modesService);
-}
-
-
-void onCurrentModeChange(BLEDevice central, BLECharacteristic characteristic)
-{
-    byte newMode;
-    characteristic.readValue(newMode);
-
-    switch (newMode)
-    {
-    case TableModes::Colorful:
-        currentMode = Colorful;
-        Serial.println("Colorful");
+    auto newMode = command.substring(4);
+    if (newMode.equals(MODE_COLORFUL)) {
         enableColorfulMode();
-        break;
-
-    case TableModes::Music:
-        currentMode = Music;
-        Serial.println("Music");
-        break;
-
-    default:
-        currentMode = Normal;
-        Serial.println("Normal");
+    } else {
+        Serial.println("Enabling Normal Mode");
         enableNormalMode();
-        break;
     }
 }
 
 void enableNormalMode()
 {
+    if (currentMode.equals(MODE_NORMAL)) return;
+
     if (currentLoop)
     {
         currentLoop->remove();
+        currentLoop = NULL;
     }
     setHexagonsColor(getCurrentColor());
+    currentMode = MODE_NORMAL;
 }
 
 void enableColorfulMode()
 {
+    if (currentMode.equals(MODE_COLORFUL)) return;
+
+    Serial.println("Enabling Colorful Mode");
+
     if (currentLoop)
     {
+        Serial.println("Stopping other modes");
         currentLoop->remove();
+        currentLoop = NULL;
     }
+
     
+    Serial.println("Initializing loop variables");
+
     static CRGB startColor;
     static CRGB endColor;
     static int i;
     static const int steps = 20;
 
+    
     i = 0;
     startColor = getCurrentColor();
     endColor = getRandomColor();
+    
+    Serial.println("Starting loop");
 
     currentLoop = async.onRepeat(
         50,
@@ -94,5 +82,8 @@ void enableColorfulMode()
             }
         }
     );
-    
+
+    Serial.println("Loop started");
+
+    currentMode = MODE_COLORFUL;
 }

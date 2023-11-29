@@ -1,32 +1,17 @@
-#include <ArduinoBLE.h>
+#include <Arduino.h>
 
 #include "touch_sensors.hpp"
 #include "../../constants/constants.hpp"
 
 bool touchSensorsEnabled;
-BLEService touchSensorService("touch-sensors-service");
-BLEBoolCharacteristic touchSensorEnabledCharacteristic("touch-sensors-enabled", BLERead | BLEWrite);
-
-
-void onTouchSensorsChange(BLEDevice central, BLECharacteristic characteristic);
 
 void setupTouchSensors()
 {
     pinMode(TOUCH_SENSORS_TOGGLE_PIN, OUTPUT);
 }
 
-void setupTouchSensorsBLE()
+void handleTouchSensorCommand(String command)
 {
-    BLE.setAdvertisedService(touchSensorService);
-    touchSensorEnabledCharacteristic.setEventHandler(BLEWritten, onTouchSensorsChange);
-    touchSensorService.addCharacteristic(touchSensorEnabledCharacteristic);
-    BLE.addService(touchSensorService);
-}
-
-void onTouchSensorsChange(BLEDevice central, BLECharacteristic characteristic)
-{
-    byte enabled;
-    characteristic.readValue(enabled);
-    touchSensorsEnabled = enabled;
+    touchSensorsEnabled = command.endsWith("on");
     digitalWrite(TOUCH_SENSORS_TOGGLE_PIN, touchSensorsEnabled);
 }

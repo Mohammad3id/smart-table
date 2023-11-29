@@ -2,6 +2,6 @@
 #define TOUCH_SENDORS_H
 
 void setupTouchSensors();
-void setupTouchSensorsBLE();
+void handleTouchSensorCommand(String command);
 
 #endif

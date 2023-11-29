@@ -1,4 +1,3 @@
-#include <ArduinoBLE.h>
 #include <FastLED.h>
 
 #include "toggle.hpp"
@@ -6,11 +5,6 @@
 #include "../../utils/utils.hpp"
 
 uint32_t hexagonPowers;
-BLEService toggleService("toggle-service");
-BLEBoolCharacteristic* toggleCharacteristics[HEXAGONS_COUNT];
-
-
-void onToggleChange(BLEDevice central, BLECharacteristic characteristic);
 
 void setupToggle()
 {
@@ -19,25 +13,15 @@ void setupToggle()
     pinMode(DATA_PIN, OUTPUT);
 }
 
-void setupToggleBLE()
+void handleToggleCommand(String command)
 {
-    BLE.setAdvertisedService(toggleService);
-    for (int i = 0; i < HEXAGONS_COUNT; i++)
-    {
-        auto characteristic = BLEBoolCharacteristic(hexagonUUIDs[i], BLERead | BLEWrite);
-        characteristic.setEventHandler(BLEWritten, onToggleChange);
-        toggleService.addCharacteristic(characteristic);
-        toggleCharacteristics[i] = &characteristic;
-    }
-    BLE.addService(toggleService);
-}
+    auto strIndex = command.substring(4);
+    strIndex.replace("-on", "");
+    strIndex.replace("-off", "");
+    int index = strIndex.toInt();
+    
+    auto power = command.endsWith("on");
 
-
-void onToggleChange(BLEDevice central, BLECharacteristic characteristic)
-{
-    auto index = atoi(&characteristic.uuid()[8]);
-    byte power;
-    characteristic.readValue(power);
     toggleHexagon(index, power);
 }
 
@@ -57,18 +41,4 @@ void toggleHexagon(int hexagonIndex, bool power)
     shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, hexagonPowers);
 
     digitalWrite(LATCH_PIN, HIGH);
-
-    // Serial.print("Hexagon ");
-    // Serial.print(hexagonIndex);
-    // if (power)
-    // {
-    //     Serial.println(": ON");
-    // }
-    // else
-    // {
-    //     Serial.println(": OFF");
-    // }
-
-    // Serial.print("Current Power: ");
-    // Serial.println(binaryString(hexagonPowers, HEXAGONS_COUNT));
 }

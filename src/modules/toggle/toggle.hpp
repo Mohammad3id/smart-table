@@ -2,7 +2,7 @@
 #define TOGGLE_H
 
 void setupToggle();
-void setupToggleBLE();
+void handleToggleCommand(String command);
 void toggleHexagon(int hexagonIndex, bool power);
 
 #endif

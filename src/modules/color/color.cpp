@@ -1,34 +1,20 @@
-#include <ArduinoBLE.h>
 #include <FastLED.h>
 
 #include "color.hpp"
 #include "../../constants/constants.hpp"
 
 CRGB ledsColor[HEXAGON_LEDS_COUNT];
-BLEService colorService("color-service");
-BLEIntCharacteristic colorCharacteristic("color", BLERead | BLEWrite);
-
-
-void onColorChange(BLEDevice central, BLECharacteristic characteristic);
 
 void setupColor()
 {
     FastLED.addLeds<NEOPIXEL, HEXAGONS_COLOR_PIN>(ledsColor, HEXAGON_LEDS_COUNT);
 }
 
-void setupColorBLE()
-{
-    BLE.setAdvertisedService(colorService);
-    colorCharacteristic.setEventHandler(BLEWritten, onColorChange);
-    colorService.addCharacteristic(colorCharacteristic);
-    BLE.addService(colorService);
-}
 
-void onColorChange(BLEDevice central, BLECharacteristic characteristic)
+void handleColorCommand(String command)
 {
-    uint32_t newColor;
-    characteristic.readValue(newColor);
-    setHexagonsColor(CRGB(newColor));
+    String newColorCode = command.substring(4);
+    setHexagonsColor(CRGB(std::stoi(newColorCode.c_str(), 0, 16)));
 }
 
 void setHexagonsColor(CRGB color)
@@ -42,7 +28,5 @@ void setHexagonsColor(CRGB color)
 
 CRGB getCurrentColor()
 {
-    uint32_t newColor;
-    colorCharacteristic.readValue(newColor);
-    return CRGB(newColor);
+    return ledsColor[0];
 }

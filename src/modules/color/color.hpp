@@ -4,7 +4,7 @@
 #include "FastLED.h"
 
 void setupColor();
-void setupColorBLE();
+void handleColorCommand(String command);
 void setHexagonsColor(CRGB color);
 CRGB getCurrentColor();
 

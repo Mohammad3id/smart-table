@@ -2,6 +2,6 @@
 #define SETUP_H
 
 void setupTable();
-void setupTableBLE();
+void setupBluetooth();
 
 #endif

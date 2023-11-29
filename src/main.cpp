@@ -1,39 +1,17 @@
-// #include <Arduino.h>
-// #include <ArduinoBLE.h>
-#include <FastLED.h>
-// #include <ReactESP.h>
-
-#include "BluetoothSerial.h"
-#include "BluetoothA2DP.h"
+#include <Arduino.h>
+#include "async/async.hpp"
+#include "setup/setup.hpp"
 
 
-// #include "setup/setup.hpp"
-// #include "async/async.hpp"
+void executeCommand(String command);
 
-// reactesp::ReactESP app(true);
-BluetoothA2DPSink a2dp_sink;
-BluetoothSerial SerialBT;
-
-void setup()
-{
+void setup() {
   Serial.begin(115200);
-
-  // if (!BLE.begin()) {
-  //   Serial.println("- Starting Bluetooth® Low Energy module failed!");
-  //   while (1);
-  // }
-  // setupTable();
-  // setupTableBLE();
-
-  a2dp_sink.start("Smart Table");
-
+  setupTable();
+  setupBluetooth();
+  Serial.println("The device started, now you can pair it with bluetooth!");
 }
 
-void loop()
-{
-  if (SerialBT.available()) {
-    Serial.write(SerialBT.read());
-  }
-  
-  // async.tick();
+void loop() {
+  async.tick();
 }

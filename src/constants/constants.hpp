@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 #define HEXAGONS_COUNT 21
-#define HEXAGON_LEDS_COUNT 10
+#define HEXAGON_LEDS_COUNT 21
 
 #define HEXAGONS_COLOR_PIN 15
 
@@ -12,8 +12,15 @@
 
 #define TOUCH_SENSORS_TOGGLE_PIN 15
 
-#define TABLE_BLE_NAME "Smart Table"
+#define TABLE_NAME "Smart Table"
 
-extern const char* hexagonUUIDs[];
+#define COLOR_COMMAND "clr"
+#define TOGGLE_COMMAND "tgl"
+#define TOUCH_SENSOR_COMMAND "tch"
+
+#define MODE_COMMAND "mod"
+#define MODE_NORMAL "normal"
+#define MODE_COLORFUL "colorful"
+#define MODE_MUSIC "music"
 
 #endif
